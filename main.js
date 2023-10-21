@@ -18,27 +18,27 @@ function addTodo(e) {
     const email = emailInput.value;
     const phone = phoneInput.value;
     console.log(2);
-    axios.post('https://crudcrud.com/api/8967065280c84221bee01186e532ca5f/appointments',{
+    axios.post('https://crudcrud.com/api/6b12fe1ee5f54ca68d1d6589dd476e9a/appointments',{
         Name:name,
         Email: email,
         Phone: phone
     })
     .then(res => console.log(res))
     .catch(err => console.log(err))
-
+    displayData();
     console.log(3);
 
     nameInput.value = "";
     emailInput.value = "";
     phoneInput.value="";
 
-    displayData();
+    
 }
 
 function displayData() {
     localStorageDataList.innerHTML = ""; // Clear previous data
 
-    axios.get('https://crudcrud.com/api/8967065280c84221bee01186e532ca5f/appointments')
+    axios.get('https://crudcrud.com/api/6b12fe1ee5f54ca68d1d6589dd476e9a/appointments')
     .then(res => {
         for (let i = 0; i < res.data.length; i++) {
             showAllUsers(res.data[i]);
@@ -50,7 +50,7 @@ function displayData() {
 window.addEventListener("DOMContentLoaded",()=>{
     localStorageDataList.innerHTML = ""; // Clear previous data
 
-    axios.get('https://crudcrud.com/api/8967065280c84221bee01186e532ca5f/appointments')
+    axios.get('https://crudcrud.com/api/6b12fe1ee5f54ca68d1d6589dd476e9a/appointments')
     .then(res => {
         for (let i = 0; i < res.data.length; i++) {
             showAllUsers(res.data[i]);
@@ -63,7 +63,7 @@ function showAllUsers(user){
     const listItem = document.createElement("li");
             const deleteItem = document.createElement("button");
             deleteItem.textContent = "Delete";
-            deleteItem.addEventListener('click', () => deleteElement(email));
+            deleteItem.addEventListener('click', () => deleteElement(user._id));
     
             // Add an Edit button
             const editItem = document.createElement("button");
@@ -77,9 +77,12 @@ function showAllUsers(user){
             listItem.appendChild(deleteItem);
 }
 
-function deleteElement(email){
-    localStorage.removeItem(email);
-    displayLocalStorageData();
+function deleteElement(id){
+    axios.delete(`https://crudcrud.com/api/6b12fe1ee5f54ca68d1d6589dd476e9a/appointments/${id}`)
+    .then(res => console.log('Hogaya Delete'))
+    .catch(err => console.log(err))
+
+    displayData();
 }
 function editElement(email, userData){
     const newEmail = prompt(`Edit email for ${userData.name}:`, userData.email);
