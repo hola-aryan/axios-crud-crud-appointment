@@ -68,7 +68,7 @@ function showAllUsers(user){
             // Add an Edit button
             const editItem = document.createElement("button");
             editItem.textContent = "Edit";
-            editItem.addEventListener('click', () => editElement(email, userData));
+            editItem.addEventListener('click', () => editElement(user._id, user));
     
             listItem.textContent = `Name: ${user.Name}, Email: ${user.Email}, Mobile: ${user.Phone}`;
     
@@ -84,14 +84,26 @@ function deleteElement(id){
 
     displayData();
 }
-function editElement(email, userData){
-    const newEmail = prompt(`Edit email for ${userData.name}:`, userData.email);
+
+
+function editElement(id, user){
+    const newEmail = prompt(`Edit email for ${user.name}:`, user.email);
+    const newName = prompt(`Edit Name for ${user.name}:`, user.name);
+    const newPhone = prompt(`Edit Name for ${user.name}:`, user.phone);
 
     // Update email in localStorage if a new email is provided
     if (newEmail !== null && newEmail.trim() !== "") {
-        userData.email = newEmail.trim();
-        localStorage.setItem(email, JSON.stringify(userData));
-        displayLocalStorageData(); // Refresh the displayed data
+        user.email = newEmail.trim();
+
+        axios.put(`https://crudcrud.com/api/6b12fe1ee5f54ca68d1d6589dd476e9a/appointments/${id}`,{
+        Name: newName,
+        Email: user.email,
+        Phone: newPhone
+    })
+    .then(res => console.log(res))
+    .catch(err => console.log(err))
+        
+    displayData(); // Refresh the displayed data
     }
 
 }
