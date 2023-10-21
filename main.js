@@ -23,7 +23,7 @@ function addTodo(e) {
         Email: email,
         Phone: phone
     })
-    .then(res => showOutput(res))
+    .then(res => console.log(res))
     .catch(err => console.log(err))
 
     console.log(3);
@@ -31,31 +31,50 @@ function addTodo(e) {
     nameInput.value = "";
     emailInput.value = "";
     phoneInput.value="";
+
+    displayData();
 }
 
-function displayLocalStorageData() {
+function displayData() {
     localStorageDataList.innerHTML = ""; // Clear previous data
 
-    for (let i = 0; i < localStorage.length; i++) {
-        const email = localStorage.key(i);
-        const userData = JSON.parse(localStorage.getItem(email));
+    axios.get('https://crudcrud.com/api/8967065280c84221bee01186e532ca5f/appointments')
+    .then(res => {
+        for (let i = 0; i < res.data.length; i++) {
+            showAllUsers(res.data[i]);
+        }
+    })
+    .catch(err => console.log(err))
+}
 
-        const listItem = document.createElement("li");
-        const deleteItem = document.createElement("button");
-        deleteItem.textContent = "Delete";
-        deleteItem.addEventListener('click', () => deleteElement(email));
+window.addEventListener("DOMContentLoaded",()=>{
+    localStorageDataList.innerHTML = ""; // Clear previous data
 
-        // Add an Edit button
-        const editItem = document.createElement("button");
-        editItem.textContent = "Edit";
-        editItem.addEventListener('click', () => editElement(email, userData));
+    axios.get('https://crudcrud.com/api/8967065280c84221bee01186e532ca5f/appointments')
+    .then(res => {
+        for (let i = 0; i < res.data.length; i++) {
+            showAllUsers(res.data[i]);
+        }
+    })
+    .catch(err => console.log(err))
+})
 
-        listItem.textContent = `Name: ${userData.name}, Email: ${userData.email}, Mobile: ${userData.phone}`;
-
-        localStorageDataList.appendChild(listItem);
-        listItem.appendChild(editItem);
-        listItem.appendChild(deleteItem);
-    }
+function showAllUsers(user){
+    const listItem = document.createElement("li");
+            const deleteItem = document.createElement("button");
+            deleteItem.textContent = "Delete";
+            deleteItem.addEventListener('click', () => deleteElement(email));
+    
+            // Add an Edit button
+            const editItem = document.createElement("button");
+            editItem.textContent = "Edit";
+            editItem.addEventListener('click', () => editElement(email, userData));
+    
+            listItem.textContent = `Name: ${user.Name}, Email: ${user.Email}, Mobile: ${user.Phone}`;
+    
+            localStorageDataList.appendChild(listItem);
+            listItem.appendChild(editItem);
+            listItem.appendChild(deleteItem);
 }
 
 function deleteElement(email){
